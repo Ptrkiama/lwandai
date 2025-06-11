@@ -1,73 +1,78 @@
-# Welcome to your Lovable project
+# Lwandai Association Financial Dashboard
 
-## Project info
+A simple web-based dashboard for tracking member contributions and balances for the Lwandai Association. Built with **React**, **TypeScript**, **Tailwind CSS**, and **Vite**.
 
-**URL**: https://lovable.dev/projects/c64dae4d-bd7c-41eb-83e4-f57f8861895a
+![Screenshot](./screenshot.png) <!-- Replace with your actual screenshot path if available -->
 
-## How can I edit this code?
+## ✨ Features
 
-There are several ways of editing your application.
+- Group financial summary with totals
+- Member contribution cards
+- Search functionality to filter members
+- Status badges (Paid / Partial / Not Paid)
+- Mobile-responsive layout
+- Data fetched live from Google Sheets
 
-**Use Lovable**
+## 🔧 Technologies
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c64dae4d-bd7c-41eb-83e4-f57f8861895a) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
+- React + TypeScript
 - Tailwind CSS
+- ShadCN UI
+- Vite
+- Google Sheets API (via opensheet.elk.sh)
 
-## How can I deploy this project?
+## 📦 Getting Started
 
-Simply open [Lovable](https://lovable.dev/projects/c64dae4d-bd7c-41eb-83e4-f57f8861895a) and click on Share -> Publish.
+Clone the repo and install dependencies:
 
-## Can I connect a custom domain to my Lovable project?
+```bash
+git clone https://github.com/yPtrkiama/lwandai.git
+cd lwandai
+npm install
+Run the development server:
 
-Yes, you can!
+bash
+Copy
+Edit
+npm run dev
+Open http://localhost:5173 to view in the browser.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+🛠 Project Structure
+/components – Reusable UI components
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+/pages – Main view (Index)
+
+GroupSummary – Shows total expected, actual, and balance
+
+MemberCard – Displays individual member data
+
+MemberSearch – Search bar for filtering
+
+🌐 Deployment
+You can deploy this project easily using:
+
+Vercel
+
+Netlify
+
+GitHub Pages
+
+🙌 Acknowledgements
+OpenSheet – for converting Google Sheets to JSON
+
+ShadCN UI – beautiful UI components
+
+Lucide Icons
+
+📌 License
+This project is open-source and free to use under the MIT License.
+
+Designed by Peter Kiama
+
+yaml
+Copy
+Edit
+
+---
+
+Let me know if you'd like to [customize it for Vercel](f), add a [live demo link](
