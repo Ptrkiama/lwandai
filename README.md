@@ -26,7 +26,7 @@ A simple web-based dashboard for tracking member contributions and balances for 
 Clone the repo and install dependencies:
 
 ```bash
-git clone https://github.com/yPtrkiama/lwandai.git
+git clone https://github.com/Ptrkiama/lwandai.git
 cd lwandai
 npm install
 Run the development server:
