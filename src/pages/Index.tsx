@@ -47,7 +47,7 @@ const Index = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Lwandai Association Financial Summary</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Lwandai Friends Association Financial Summary</h1>
           <p className="text-lg text-muted-foreground">Contributions and balances for all group members</p>
         </div>
 
@@ -81,7 +81,7 @@ const Index = () => {
     ))}
   </div>
 ) : (
-  <p className="text-center text-gray-500">Search to view individual contributions.</p>
+  <p className="text-center text-gray-500">Search to view your contributions.</p>
 )}
 
            {/* Footer */}
