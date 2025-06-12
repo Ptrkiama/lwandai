@@ -100,4 +100,12 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+}
+html.dark-mode-transition *,
+html.dark-mode-transition *::before,
+html.dark-mode-transition *::after {
+  transition-property: background-color, color, border-color, fill, stroke, box-shadow;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in-out;
 }

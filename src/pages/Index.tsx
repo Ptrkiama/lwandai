@@ -14,16 +14,22 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Set dark mode automatically based on time
+  // Load saved dark mode preference or use time-based default
   useEffect(() => {
-    const hour = new Date().getHours();
-    const isNightTime = hour < 6 || hour >= 18;
-    setIsDarkMode(isNightTime);
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode !== null) {
+      setIsDarkMode(savedMode === "true");
+    } else {
+      const hour = new Date().getHours();
+      const isNightTime = hour < 6 || hour >= 18;
+      setIsDarkMode(isNightTime);
+    }
   }, []);
 
-  // Toggle dark mode class on <html>
+  // Apply/remove dark class and add transition class
   useEffect(() => {
     const root = window.document.documentElement;
+    root.classList.add("dark-mode-transition");
     if (isDarkMode) {
       root.classList.add("dark");
     } else {
@@ -31,6 +37,7 @@ const Index = () => {
     }
   }, [isDarkMode]);
 
+  // Fetch members data
   useEffect(() => {
     fetch("https://opensheet.elk.sh/1IzawdScMCspX5y9JUf85f45-paSKq_EiDMTtqDm11OY/Sheet13")
       .then((res) => res.json())
@@ -47,10 +54,7 @@ const Index = () => {
     fullName: m.name,
     totalContribution: parseFloat(m.contributed) || 0,
     expectedContribution: parseFloat(m.expected) || 0,
-    remainingBalance: Math.max(
-      0,
-      (parseFloat(m.expected) || 0) - (parseFloat(m.contributed) || 0)
-    ),
+    remainingBalance: Math.max(0, (parseFloat(m.expected) || 0) - (parseFloat(m.contributed) || 0)),
   }));
 
   const filteredMembers = numericMembers.filter((member) =>
@@ -63,13 +67,18 @@ const Index = () => {
   const memberCount = numericMembers.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800
+                    text-gray-900 dark:text-gray-100 transition-colors duration-500 ease-in-out">
       <div className="container mx-auto px-4 py-8">
 
         {/* Dark Mode Toggle */}
         <div className="flex justify-end mb-4">
           <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
+            onClick={() => {
+              const newMode = !isDarkMode;
+              setIsDarkMode(newMode);
+              localStorage.setItem("darkMode", String(newMode));
+            }}
             className="px-4 py-2 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 dark:text-white"
           >
             {isDarkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
@@ -77,14 +86,15 @@ const Index = () => {
         </div>
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Lwandai Friends Association Financial Summary
+        <header className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-3">
+            Lwandai Friends Association
           </h1>
-          <p className="text-lg text-muted-foreground dark:text-gray-400">
-            Contributions and balances for all group members
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-6">
+            Financial Summary Dashboard
           </p>
-        </div>
+          <div className="w-24 h-1 mx-auto bg-blue-500 rounded-full"></div>
+        </header>
 
         {/* Group Summary */}
         <GroupSummary
