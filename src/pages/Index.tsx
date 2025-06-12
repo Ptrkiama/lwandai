@@ -127,14 +127,14 @@ const Index = () => {
 
         {/* Footer */}
         <footer className="mt-16 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-  © Copyright 2025 - Designed By{" "}
+  ©2025 {" "}
   <a
     href="https://yourwebsite.com"
     target="_blank"
     rel="noopener noreferrer"
     className="font-semibold text-gray-700 dark:text-white hover:underline"
   >
-    Pk Consulting
+    Pk Consulting.
   </a>
 </footer>
       </div>
