@@ -109,3 +109,4 @@ html.dark-mode-transition *::after {
   transition-duration: 0.5s;
   transition-timing-function: ease-in-out;
 }
+
