@@ -12,12 +12,29 @@ interface Member {
 const Index = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Set dark mode automatically based on time
+  useEffect(() => {
+    const hour = new Date().getHours();
+    const isNightTime = hour < 6 || hour >= 18;
+    setIsDarkMode(isNightTime);
+  }, []);
+
+  // Toggle dark mode class on <html>
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (isDarkMode) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [isDarkMode]);
 
   useEffect(() => {
     fetch("https://opensheet.elk.sh/1IzawdScMCspX5y9JUf85f45-paSKq_EiDMTtqDm11OY/Sheet13")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched members:", data);
         setMembers(data);
       })
       .catch((error) => {
@@ -30,7 +47,10 @@ const Index = () => {
     fullName: m.name,
     totalContribution: parseFloat(m.contributed) || 0,
     expectedContribution: parseFloat(m.expected) || 0,
-    remainingBalance: Math.max(0, (parseFloat(m.expected) || 0) - (parseFloat(m.contributed) || 0)),
+    remainingBalance: Math.max(
+      0,
+      (parseFloat(m.expected) || 0) - (parseFloat(m.contributed) || 0)
+    ),
   }));
 
   const filteredMembers = numericMembers.filter((member) =>
@@ -43,12 +63,27 @@ const Index = () => {
   const memberCount = numericMembers.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors">
       <div className="container mx-auto px-4 py-8">
+
+        {/* Dark Mode Toggle */}
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="px-4 py-2 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 dark:text-white"
+          >
+            {isDarkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          </button>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Lwandai Friends Association Financial Summary</h1>
-          <p className="text-lg text-muted-foreground">Contributions and balances for all group members</p>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            Lwandai Friends Association Financial Summary
+          </h1>
+          <p className="text-lg text-muted-foreground dark:text-gray-400">
+            Contributions and balances for all group members
+          </p>
         </div>
 
         {/* Group Summary */}
@@ -61,34 +96,38 @@ const Index = () => {
 
         {/* Member Section */}
         <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Member Contributions</h2>
-          <p className="text-muted-foreground mb-6">Individual contribution status and remaining balances</p>
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+            Member Contributions
+          </h2>
+          <p className="text-muted-foreground dark:text-gray-400 mb-6">
+            Individual contribution status and remaining balances
+          </p>
           <MemberSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         </div>
 
         {/* Member Cards */}
-      {/* Member Cards (only show after search) */}
-{searchTerm.trim() !== "" ? (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {filteredMembers.map((member) => (
-      <MemberCard
-        key={member.id}
-        fullName={member.fullName}
-        totalContribution={member.totalContribution}
-        expectedContribution={member.expectedContribution}
-        remainingBalance={member.remainingBalance}
-      />
-    ))}
-  </div>
-) : (
-  <p className="text-center text-gray-500">Search to view your contributions.</p>
-)}
+        {searchTerm.trim() !== "" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredMembers.map((member) => (
+              <MemberCard
+                key={member.id}
+                fullName={member.fullName}
+                totalContribution={member.totalContribution}
+                expectedContribution={member.expectedContribution}
+                remainingBalance={member.remainingBalance}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500 dark:text-gray-400">
+            Search to view your contributions.
+          </p>
+        )}
 
-           {/* Footer */}
-      <div className="mt-12 text-center text-sm text-gray-500">
-        Designed by <span className="font-semibold text-gray-700">Peter Kiama</span>
-      </div>
-  
+        {/* Footer */}
+        <div className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
+          Designed by <span className="font-semibold text-gray-700 dark:text-white">Peter Kiama</span>
+        </div>
       </div>
     </div>
   );
