@@ -37,7 +37,7 @@ const Index = () => {
   }, [isDarkMode]);
 
   useEffect(() => {
-    fetch("https://opensheet.elk.sh/1IzawdScMCspX5y9JUf85f45-paSKq_EiDMTtqDm11OY/Sheet13")
+    fetch("https://opensheet.elk.sh/1IzawdScMCspX5y9JUf85f45-paSKq_EiDMTtqDm11OY/Website_data")
       .then((res) => res.json())
       .then((data) => setMembers(data))
       .catch((error) => console.error("Failed to fetch members:", error));
