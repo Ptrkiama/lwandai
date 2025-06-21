@@ -135,7 +135,7 @@ const Index = () => {
               rel="noopener noreferrer"
               className="hover:underline"
             >
-              Pk Technologies
+              Pk Technologies Ltd.
             </a>
           </div>
         </footer>
