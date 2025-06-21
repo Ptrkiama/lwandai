@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { GroupSummary } from "@/components/GroupSummary";
 import { MemberCard } from "@/components/MemberCard";
 import { MemberSearch } from "@/components/MemberSearch";
-import { Analytics } from "@vercel/analytics/react";  // <-- import Analytics here
+import { Analytics } from "@vercel/analytics/react";
 
 interface Member {
   name: string;
@@ -81,9 +81,9 @@ const Index = () => {
         {/* Header */}
         <header className="text-center mb-10 py-6 px-4 bg-gradient-to-r from-blue-100 to-blue-200 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">
-             Lwandai Friends Association
+            Lwandai Friends Association
           </h1>
-        
+
           <div className="mt-4 flex justify-center">
             <div className="w-20 h-1 bg-blue-500 dark:bg-blue-400 rounded-full animate-pulse" />
           </div>
@@ -102,7 +102,7 @@ const Index = () => {
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
             Member Contributions
           </h2>
-          
+
           <MemberSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         </section>
 
@@ -126,20 +126,22 @@ const Index = () => {
         )}
 
         {/* Footer */}
-        <footer className="mt-16 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-  ©2025 {" "}
-  <a
-    href="https://yourwebsite.com"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="font-semibold text-gray-700 dark:text-white hover:underline"
-  >
-    Pk Consulting.
-  </a>
-</footer>
+        <footer className="mt-16 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+         <div className="text-[11px] text-gray-400 dark:text-gray-500">
+            Designed by{" "}
+            <a
+              href="https://pktechnologies.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              Pk Technologies
+            </a>
+          </div>
+        </footer>
       </div>
 
-      {/* Analytics component */}
+      {/* Analytics */}
       <Analytics />
     </div>
   );
