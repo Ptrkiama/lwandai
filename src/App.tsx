@@ -11,7 +11,7 @@ import MyContributions from "./pages/MyContributions";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/AdminView"; // Admin dashboard component
 
-import MainLayout from "./layouts/MainLayout"; // Layout with UserHeader
+import MainLayout from "./Layouts/MainLayout"; // Layout with UserHeader
 
 import { supabase } from "@/lib/supabaseClient";
 
