@@ -1,73 +1,83 @@
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertCircle, XCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { FaUser } from "react-icons/fa";
 
 interface MemberCardProps {
   fullName: string;
   totalContribution: number;
-  remainingBalance: number;
   expectedContribution: number;
+  remainingBalance: number;
 }
 
-export function MemberCard({ fullName, totalContribution, remainingBalance, expectedContribution }: MemberCardProps) {
-  const isPaidInFull = remainingBalance <= 0;
-  const isPartiallyPaid = totalContribution > 0 && remainingBalance > 0;
-  const isNotPaid = totalContribution === 0;
+export const MemberCard = ({
+  fullName,
+  totalContribution,
+  expectedContribution,
+  remainingBalance,
+}: MemberCardProps) => {
+  const percent = expectedContribution
+    ? ((totalContribution / expectedContribution) * 100).toFixed(1)
+    : "0";
 
-  const getStatusIcon = () => {
-    if (isPaidInFull) return <CheckCircle className="h-5 w-5 text-green-600" />;
-    if (isPartiallyPaid) return <AlertCircle className="h-5 w-5 text-yellow-600" />;
-    return <XCircle className="h-5 w-5 text-red-600" />;
-  };
+  const status =
+    totalContribution === 0
+      ? "No Payment"
+      : totalContribution < expectedContribution
+      ? "Partial Payment"
+      : "Fully Paid";
 
-  const getStatusBadge = () => {
-    if (isPaidInFull) return <Badge variant="secondary" className="bg-green-100 text-green-800 hover:bg-green-200">Paid in Full</Badge>;
-    if (isPartiallyPaid) return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">Partial Payment</Badge>;
-    return <Badge variant="secondary" className="bg-red-100 text-red-800 hover:bg-red-200">Not Paid</Badge>;
-  };
+  const statusColor =
+    status === "Fully Paid"
+      ? "bg-green-200 text-green-700"
+      : status === "Partial Payment"
+      ? "bg-yellow-200 text-yellow-700"
+      : "bg-red-200 text-red-700";
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200">
-      <CardHeader className="pb-3">
+    <Card className="hover:shadow-md transition bg-white dark:bg-gray-800">
+      <CardContent className="p-5 space-y-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">{fullName}</CardTitle>
-          <div className="flex items-center gap-2">
-            {getStatusIcon()}
-            {getStatusBadge()}
+          <div className="flex items-center gap-2 text-gray-800 dark:text-gray-200">
+            <FaUser />
+            <h3 className="font-semibold">{fullName}</h3>
           </div>
+          <span className={`text-xs px-2 py-1 rounded-full font-medium ${statusColor}`}>
+            {status}
+          </span>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">Total Contribution</p>
-            <p className="text-xl font-bold text-blue-700">Tsh {totalContribution.toLocaleString()}</p>
+
+        <div className="grid grid-cols-3 text-center mt-4 gap-2 text-sm">
+          <div>
+            <p className="text-gray-500 dark:text-gray-400">Total</p>
+            <p className="text-blue-600 font-bold dark:text-blue-300">
+              Tsh {totalContribution.toLocaleString()}
+            </p>
           </div>
-          
-          <div className="text-center p-3 bg-orange-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">Expected</p>
-            <p className="text-xl font-bold text-orange-700">Tsh {expectedContribution.toLocaleString()}</p>
+          <div>
+            <p className="text-gray-500 dark:text-gray-400">Expected</p>
+            <p className="text-orange-600 font-bold dark:text-orange-300">
+              Tsh {expectedContribution.toLocaleString()}
+            </p>
           </div>
-          
-          <div className="text-center p-3 bg-red-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">Remaining Balance</p>
-            <p className="text-xl font-bold text-red-700">
-              {remainingBalance > 0 ? `Tsh ${remainingBalance.toLocaleString()}` : '$0'}
+          <div>
+            <p className="text-gray-500 dark:text-gray-400">Remaining</p>
+            <p className="text-red-600 font-bold dark:text-red-300">
+              Tsh {remainingBalance.toLocaleString()}
             </p>
           </div>
         </div>
-        
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${Math.min((totalContribution / expectedContribution) * 100, 100)}%` }}
-          ></div>
+
+        <div className="mt-4">
+          <div className="h-2 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-blue-500 dark:bg-blue-400 rounded-full"
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+          <p className="text-xs mt-1 text-center text-gray-600 dark:text-gray-400">
+            {percent}% of expected contribution
+          </p>
         </div>
-        <p className="text-xs text-muted-foreground text-center">
-          {((totalContribution / expectedContribution) * 100).toFixed(1)}% of expected contribution
-        </p>
       </CardContent>
     </Card>
   );
-}
+};
