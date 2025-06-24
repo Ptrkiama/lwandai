@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ReactNode, useEffect, useState } from "react";
 
 import Index from "./pages/Index";
-import Login from "./pages/Login";
+import Login from "./pages/tempLogin";
 import MyContributions from "./pages/MyContributions";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/AdminView"; // Admin dashboard component
