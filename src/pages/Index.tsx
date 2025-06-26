@@ -98,13 +98,7 @@ const Index = () => {
         <Controls />
       </Suspense>
 
-      <GroupSummary
-        totalBalance={groupTotals.totalBalance}
-        totalExpected={groupTotals.totalExpected}
-        totalActual={groupTotals.totalActual}
-        memberCount={groupTotals.memberCount}
-      />
-
+      {/* My Contributions Section */}
       {myMember && (
         <div className="mb-8 mt-10">
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -203,6 +197,66 @@ const Index = () => {
         </div>
       )}
 
+      {/* Total Group Balance Section */}
+      <div className="mb-10">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+          Total Group Balance
+        </h2>
+        <div className="relative overflow-hidden rounded-2xl border border-green-500 bg-gradient-to-br from-green-900 via-green-800 to-green-700 p-6 shadow-xl text-white">
+          <div className="absolute top-0 right-0 -mt-4 -mr-4 w-28 h-28 rounded-full bg-green-600 opacity-10 blur-3xl z-0" />
+          <div className="relative z-10 space-y-3">
+            <p className="text-4xl font-bold">
+              Tsh {groupTotals.totalActual.toLocaleString()}
+            </p>
+            <p>Current contributions collected</p>
+
+            <div className="flex items-center gap-4">
+              <svg className="w-12 h-12">
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="20"
+                  stroke="#14532d"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="20"
+                  stroke="#22c55e"
+                  strokeWidth="4"
+                  strokeDasharray="125.6"
+                  strokeDashoffset={
+                    125.6 - (125.6 * (groupTotals.totalActual / groupTotals.totalExpected))
+                  }
+                  fill="none"
+                  strokeLinecap="round"
+                  transform="rotate(-90 24 24)"
+                />
+              </svg>
+              <div>
+                <p className="text-sm text-green-300 font-semibold">Progress</p>
+                <p className="text-lg font-bold text-green-300">
+                  {((groupTotals.totalActual / groupTotals.totalExpected) * 100).toFixed(1)}%
+                </p>
+              </div>
+            </div>
+
+            <p>
+              Tsh {groupTotals.totalActual.toLocaleString()} of Tsh {groupTotals.totalExpected.toLocaleString()} collected
+            </p>
+
+            <p className="text-red-400 font-semibold">
+              Remaining Tsh {(groupTotals.totalExpected - groupTotals.totalActual).toLocaleString()}
+            </p>
+
+            <p>{groupTotals.memberCount} members total</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Top Contributors Section */}
       {rankedMembers.length > 0 && (
         <div className="mt-10 mb-6">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
@@ -244,6 +298,7 @@ const Index = () => {
         </div>
       )}
 
+      {/* Other Members Section */}
       {otherMembers.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {otherMembers.map((member) => (
