@@ -14,6 +14,109 @@ interface Member {
   avatar_url?: string;
 }
 
+const Controls = () => {
+  const [darkMode, setDarkMode] = useState(() =>
+    document.documentElement.classList.contains("dark")
+  );
+  const navigate = useNavigate();
+
+  const toggleDarkMode = () => {
+    document.documentElement.classList.toggle("dark");
+    setDarkMode(!darkMode);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
+  };
+
+  return (
+    <>
+      {/* Desktop controls - hidden on mobile */}
+      <div className="hidden sm:flex justify-end p-4 gap-6">
+        <button
+          onClick={toggleDarkMode}
+          className="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+          aria-label="Toggle dark mode"
+        >
+          {darkMode ? "Light Mode" : "Dark Mode"}
+        </button>
+        <button
+          onClick={handleLogout}
+          className="px-3 py-1 rounded-md border border-red-500 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 dark:text-red-400 transition"
+          aria-label="Logout"
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Mobile bottom bar - hidden on desktop */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-2 flex justify-around items-center sm:hidden">
+        <button
+          onClick={toggleDarkMode}
+          className="flex flex-col items-center text-sm text-gray-700 dark:text-gray-300"
+          aria-label="Toggle dark mode"
+        >
+          {darkMode ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 mb-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 3v1m0 16v1m8.66-9h-1M4.34 12H3m15.07 6.07l-.71-.71M5.64 6.64l-.71-.71m12.02 0l-.71.71M5.64 17.36l-.71.71M12 5a7 7 0 000 14a7 7 0 000-14z"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 mb-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 12.79A9 9 0 0111.21 3a7 7 0 108.49 8.49z"
+              />
+            </svg>
+          )}
+          <span>{darkMode ? "Light" : "Dark"}</span>
+        </button>
+
+        <button
+          onClick={handleLogout}
+          className="flex flex-col items-center text-sm text-red-600 dark:text-red-400"
+          aria-label="Logout"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 mb-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-10V5m0 14a9 9 0 110-18"
+            />
+          </svg>
+          <span>Logout</span>
+        </button>
+      </div>
+    </>
+  );
+};
+
 const Index = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
@@ -25,10 +128,6 @@ const Index = () => {
   });
 
   const navigate = useNavigate();
-
-  const [darkMode, setDarkMode] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
 
   useEffect(() => {
     async function fetchData() {
@@ -78,16 +177,6 @@ const Index = () => {
     fetchData();
   }, [navigate]);
 
-  const toggleDarkMode = () => {
-    document.documentElement.classList.toggle("dark");
-    setDarkMode(!darkMode);
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/login");
-  };
-
   const numericMembers = members.map((m, i) => ({
     id: m.id ?? i,
     user_id: m.user_id,
@@ -107,6 +196,9 @@ const Index = () => {
 
   return (
     <>
+      {/* Controls (Logout + Dark Mode) */}
+      <Controls />
+
       {/* Summary Section */}
       <GroupSummary
         totalBalance={groupTotals.totalBalance}
@@ -299,70 +391,6 @@ const Index = () => {
       </footer>
 
       <Analytics />
-
-      {/* Mobile bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-2 flex justify-around items-center sm:hidden">
-        <button
-          onClick={toggleDarkMode}
-          className="flex flex-col items-center text-sm text-gray-700 dark:text-gray-300"
-          aria-label="Toggle dark mode"
-        >
-          {darkMode ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mb-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 3v1m0 16v1m8.66-9h-1M4.34 12H3m15.07 6.07l-.71-.71M5.64 6.64l-.71-.71m12.02 0l-.71.71M5.64 17.36l-.71.71M12 5a7 7 0 000 14a7 7 0 000-14z"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mb-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 12.79A9 9 0 0111.21 3a7 7 0 108.49 8.49z"
-              />
-            </svg>
-          )}
-          <span>{darkMode ? "Light" : "Dark"}</span>
-        </button>
-
-        <button
-          onClick={handleLogout}
-          className="flex flex-col items-center text-sm text-red-600 dark:text-red-400"
-          aria-label="Logout"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 mb-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-10V5m0 14a9 9 0 110-18"
-            />
-          </svg>
-          <span>Logout</span>
-        </button>
-      </div>
     </>
   );
 };

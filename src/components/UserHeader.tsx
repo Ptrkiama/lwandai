@@ -5,7 +5,6 @@ import { supabase } from "@/lib/supabaseClient";
 const UserHeader: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,29 +43,6 @@ const UserHeader: React.FC = () => {
     return () => subscription?.subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("darkMode");
-    if (saved !== null) {
-      setIsDarkMode(saved === "true");
-    } else {
-      const hour = new Date().getHours();
-      setIsDarkMode(hour < 6 || hour >= 18);
-    }
-  }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.add("dark-mode-transition");
-    if (isDarkMode) root.classList.add("dark");
-    else root.classList.remove("dark");
-  }, [isDarkMode]);
-
-  const handleLogout = async () => {
-    localStorage.removeItem("token");
-    await supabase.auth.signOut();
-    navigate("/login");
-  };
-
   if (loading) return null;
 
   return (
@@ -81,26 +57,6 @@ const UserHeader: React.FC = () => {
               Welcome, {userName}
             </p>
           )}
-        </div>
-
-        <div className="mt-4 sm:mt-0 flex gap-3">
-          <button
-            onClick={() => {
-              const newMode = !isDarkMode;
-              setIsDarkMode(newMode);
-              localStorage.setItem("darkMode", String(newMode));
-            }}
-            className="px-4 py-2 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 dark:text-white"
-          >
-            {isDarkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 rounded-full text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition"
-          >
-            Logout
-          </button>
         </div>
       </div>
     </header>
