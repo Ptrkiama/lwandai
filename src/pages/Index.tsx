@@ -17,10 +17,18 @@ interface Member {
 const Index = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
+  const [groupTotals, setGroupTotals] = useState({
+    totalExpected: 0,
+    totalActual: 0,
+    totalBalance: 0,
+    memberCount: 0,
+  });
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchUserData() {
+    async function fetchData() {
+      // 1. Check user auth
       const {
         data: { user },
         error: authError,
@@ -33,20 +41,37 @@ const Index = () => {
 
       setUserId(user.id);
 
-      const { data, error } = await supabase
+      // 2. Fetch members from contributions table
+      const { data: memberData, error: memberError } = await supabase
         .from("contributions")
         .select("*");
 
-      if (error) {
-        console.error("Error fetching contributions:", error);
+      if (memberError) {
+        console.error("Error fetching contributions:", memberError);
         setMembers([]);
-        return;
+      } else {
+        setMembers(memberData as Member[]);
       }
 
-      setMembers(data as Member[]);
+      // 3. Fetch group totals from separate table
+      const { data: groupData, error: groupError } = await supabase
+        .from("group_totals")
+        .select("*")
+        .single();
+
+      if (groupError) {
+        console.error("Error fetching group totals:", groupError);
+      } else if (groupData) {
+        setGroupTotals({
+          totalExpected: groupData.total_expected || 0,
+          totalActual: groupData.total_actual || 0,
+          totalBalance: groupData.total_balance || 0,
+          memberCount: groupData.member_count || 0,
+        });
+      }
     }
 
-    fetchUserData();
+    fetchData();
   }, [navigate]);
 
   const numericMembers = members.map((m, i) => ({
@@ -62,11 +87,6 @@ const Index = () => {
   const myMember = numericMembers.find((m) => m.user_id === userId);
   const otherMembers = numericMembers.filter((m) => m.user_id !== userId);
 
-  const totalExpected = numericMembers.reduce((sum, m) => sum + m.expectedContribution, 0);
-  const totalActual = numericMembers.reduce((sum, m) => sum + m.totalContribution, 0);
-  const totalBalance = totalActual;
-  const memberCount = numericMembers.length;
-
   const rankedMembers = [...otherMembers]
     .sort((a, b) => b.totalContribution - a.totalContribution)
     .slice(0, 3);
@@ -75,10 +95,10 @@ const Index = () => {
     <>
       {/* Summary Section */}
       <GroupSummary
-        totalBalance={totalBalance}
-        totalExpected={totalExpected}
-        totalActual={totalActual}
-        memberCount={memberCount}
+        totalBalance={groupTotals.totalBalance}
+        totalExpected={groupTotals.totalExpected}
+        totalActual={groupTotals.totalActual}
+        memberCount={groupTotals.memberCount}
       />
 
       {/* My Contribution Card */}
