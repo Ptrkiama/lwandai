@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Mail, Lock } from "lucide-react";
+
+// Lazy load Lucide icons using React.lazy
+const Mail = lazy(() => import("lucide-react").then((mod) => ({ default: mod.Mail })));
+const Lock = lazy(() => import("lucide-react").then((mod) => ({ default: mod.Lock })));
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -35,7 +38,7 @@ const Login = () => {
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
-      style={{ backgroundImage: `url('/loo.webp')` }} // Make sure loo.webp is in /public
+      style={{ backgroundImage: `url('/loo.webp')` }}
     >
       <div className="bg-white/70 dark:bg-black/60 backdrop-blur-md rounded-xl shadow-2xl p-6 sm:p-10 w-full max-w-sm sm:max-w-md">
         <h2 className="text-center text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-6">
@@ -45,19 +48,24 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="relative">
-            <Mail className="absolute left-3 top-3.5 text-gray-400" size={20} />
+            <Suspense fallback={<div className="absolute left-3 top-3.5 w-5 h-5 bg-gray-300 rounded" />}>
+              <Mail className="absolute left-3 top-3.5 text-gray-400" size={20} />
+            </Suspense>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoFocus
               placeholder="Email"
               className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div className="relative">
-            <Lock className="absolute left-3 top-3.5 text-gray-400" size={20} />
+            <Suspense fallback={<div className="absolute left-3 top-3.5 w-5 h-5 bg-gray-300 rounded" />}>
+              <Lock className="absolute left-3 top-3.5 text-gray-400" size={20} />
+            </Suspense>
             <input
               type="password"
               value={password}
