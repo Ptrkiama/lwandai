@@ -1,11 +1,9 @@
 import React, { useEffect, useState, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
-import { GroupSummary } from "@/components/GroupSummary";
 import { MemberCard } from "@/components/MemberCard";
 import { Analytics } from "@vercel/analytics/react";
 import { supabase } from "@/lib/supabaseClient";
 
-// Lazy load Controls
 const Controls = React.lazy(() => import("@/components/Controls"));
 
 interface Member {
@@ -24,6 +22,7 @@ const Index = () => {
     totalExpected: 0,
     totalActual: 0,
     totalBalance: 0,
+    expenses: 0,
     memberCount: 0,
   });
 
@@ -66,6 +65,7 @@ const Index = () => {
           totalExpected: groupData.total_expected || 0,
           totalActual: groupData.total_actual || 0,
           totalBalance: groupData.total_balance || 0,
+          expenses: groupData.expenses || 0,
           memberCount: groupData.member_count || 0,
         });
       }
@@ -93,12 +93,11 @@ const Index = () => {
 
   return (
     <>
-      {/* Lazy-loaded Controls (Logout + Dark Mode) */}
       <Suspense fallback={<div className="text-center p-4">Loading controls...</div>}>
         <Controls />
       </Suspense>
 
-      {/* My Contributions Section */}
+      {/* My Contributions Section with updated colors */}
       {myMember && (
         <div className="mb-8 mt-10">
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -106,7 +105,7 @@ const Index = () => {
           </h2>
           <div className="relative overflow-hidden rounded-2xl border border-blue-500 bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#334155] p-6 shadow-xl text-white">
             <div className="absolute top-0 right-0 -mt-4 -mr-4 w-28 h-28 rounded-full bg-blue-500 opacity-10 blur-3xl z-0" />
-            <div className="relative z-10 space-y-2">
+            <div className="relative z-10 space-y-4">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
                   {myMember.avatar_url ? (
@@ -135,46 +134,104 @@ const Index = () => {
                 </span>
               </div>
 
-              <div className="text-sm text-blue-100">
-                Total:{" "}
-                <span className="font-bold text-white">
-                  Tsh {myMember.totalContribution.toLocaleString()}
-                </span>
-              </div>
-              <div className="text-sm text-blue-100">
-                Expected:{" "}
-                <span className="font-bold text-yellow-300">
-                  Tsh {myMember.expectedContribution.toLocaleString()}
-                </span>
-              </div>
-              <div className="text-sm text-blue-100">
-                Remaining:{" "}
-                <span className="font-bold text-red-300">
-                  Tsh {myMember.remainingBalance.toLocaleString()}
-                </span>
+              {/* Contribution details with icons and new colors */}
+              <div className="grid grid-cols-3 gap-6">
+                <div
+                  className="flex items-center gap-3 cursor-pointer hover:scale-105 transition-transform"
+                  title="Total amount you have contributed"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8 text-yellow-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={2} />
+                    <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth={2} />
+                  </svg>
+                  <div>
+                    <p className="text-sm text-blue-100 font-semibold">Total</p>
+                    <p className="font-bold text-white">
+                      Tsh {myMember.totalContribution.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className="flex items-center gap-3 cursor-pointer hover:scale-105 transition-transform"
+                  title="Expected contribution amount"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8 text-amber-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 8c1.38 0 2.5 1.12 2.5 2.5S13.38 13 12 13s-2.5-1.12-2.5-2.5S10.62 8 12 8z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 13v5m0-5a5 5 0 015-5v5m-10 0a5 5 0 015-5v5"
+                    />
+                  </svg>
+                  <div>
+                    <p className="text-sm text-amber-400 font-semibold">Expected</p>
+                    <p className="font-bold text-amber-400">
+                      Tsh {myMember.expectedContribution.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className="flex items-center gap-3 cursor-pointer hover:scale-105 transition-transform"
+                  title="Remaining balance to reach expected contribution"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8 text-red-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-2M7 13h.01"
+                    />
+                  </svg>
+                  <div>
+                    <p className="text-sm text-red-400 font-semibold">Remaining</p>
+                    <p className="font-bold text-red-400">
+                      Tsh {myMember.remainingBalance.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-4 flex items-center gap-4">
+              {/* Progress circle */}
+              <div className="mt-6 flex items-center gap-4">
                 <svg className="w-12 h-12">
+                  <circle cx="24" cy="24" r="20" stroke="#334155" strokeWidth="4" fill="none" />
                   <circle
                     cx="24"
                     cy="24"
                     r="20"
-                    stroke="#334155"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <circle
-                    cx="24"
-                    cy="24"
-                    r="20"
-                    stroke="#facc15"
+                    stroke="#22c55e"
                     strokeWidth="4"
                     strokeDasharray="125.6"
                     strokeDashoffset={
-                      125.6 -
-                      (125.6 *
-                        (myMember.totalContribution / myMember.expectedContribution))
+                      myMember.expectedContribution
+                        ? 125.6 - 125.6 * (myMember.totalContribution / myMember.expectedContribution)
+                        : 125.6
                     }
                     fill="none"
                     strokeLinecap="round"
@@ -184,10 +241,9 @@ const Index = () => {
                 <div>
                   <p className="text-sm text-gray-400">Contribution Progress</p>
                   <p className="text-lg font-semibold text-yellow-300">
-                    {(
-                      (myMember.totalContribution / myMember.expectedContribution) *
-                      100
-                    ).toFixed(1)}
+                    {myMember.expectedContribution
+                      ? ((myMember.totalContribution / myMember.expectedContribution) * 100).toFixed(1)
+                      : "0.0"}
                     %
                   </p>
                 </div>
@@ -197,29 +253,30 @@ const Index = () => {
         </div>
       )}
 
-      {/* Total Group Balance Section */}
+      {/* Group Totals Section with badges/icons and updated colors */}
       <div className="mb-10">
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
           Total Group Balance
         </h2>
         <div className="relative overflow-hidden rounded-2xl border border-green-500 bg-gradient-to-br from-green-900 via-green-800 to-green-700 p-6 shadow-xl text-white">
           <div className="absolute top-0 right-0 -mt-4 -mr-4 w-28 h-28 rounded-full bg-green-600 opacity-10 blur-3xl z-0" />
-          <div className="relative z-10 space-y-3">
-            <p className="text-4xl font-bold">
-              Tsh {groupTotals.totalActual.toLocaleString()}
-            </p>
-            <p>Current contributions collected</p>
+          <div className="relative z-10 space-y-6">
 
-            <div className="flex items-center gap-4">
-              <svg className="w-12 h-12">
-                <circle
-                  cx="24"
-                  cy="24"
-                  r="20"
-                  stroke="#14532d"
-                  strokeWidth="4"
-                  fill="none"
-                />
+            <div className="flex items-center gap-4 cursor-pointer hover:scale-105 transition-transform" title="Total contributions collected so far">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={2} />
+                <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth={2} />
+              </svg>
+              <div>
+                <p className="text-sm text-green-300 font-semibold">Total Collected</p>
+                <p className="text-3xl font-bold">Tsh {groupTotals.totalActual.toLocaleString()}</p>
+                <p className="text-sm">of Tsh {groupTotals.totalExpected.toLocaleString()} expected</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 cursor-pointer hover:scale-105 transition-transform" title="Percentage of total expected contributions collected">
+              <svg className="w-16 h-16">
+                <circle cx="24" cy="24" r="20" stroke="#14532d" strokeWidth="4" fill="none" />
                 <circle
                   cx="24"
                   cy="24"
@@ -228,7 +285,9 @@ const Index = () => {
                   strokeWidth="4"
                   strokeDasharray="125.6"
                   strokeDashoffset={
-                    125.6 - (125.6 * (groupTotals.totalActual / groupTotals.totalExpected))
+                    groupTotals.totalExpected
+                      ? 125.6 - 125.6 * (groupTotals.totalActual / groupTotals.totalExpected)
+                      : 125.6
                   }
                   fill="none"
                   strokeLinecap="round"
@@ -238,20 +297,39 @@ const Index = () => {
               <div>
                 <p className="text-sm text-green-300 font-semibold">Progress</p>
                 <p className="text-lg font-bold text-green-300">
-                  {((groupTotals.totalActual / groupTotals.totalExpected) * 100).toFixed(1)}%
+                  {groupTotals.totalExpected
+                    ? ((groupTotals.totalActual / groupTotals.totalExpected) * 100).toFixed(1)
+                    : "0.0"}
+                  %
                 </p>
               </div>
             </div>
 
-            <p>
-              Tsh {groupTotals.totalActual.toLocaleString()} of Tsh {groupTotals.totalExpected.toLocaleString()} collected
-            </p>
+            <div className="grid grid-cols-2 gap-10">
+              <div className="flex items-center gap-3 cursor-pointer hover:scale-105 transition-transform" title="Total expenses incurred by the group">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2a4 4 0 014-4h4m2 6v1a3 3 0 01-3 3H6a3 3 0 01-3-3v-1m14-6h-2a4 4 0 00-4 4v2" />
+                </svg>
+                <div>
+                  <p className="text-green-200 font-semibold">Expenses</p>
+                  <p className="font-bold text-orange-600">Tsh {groupTotals.expenses.toLocaleString()}</p>
+                </div>
+              </div>
 
-            <p className="text-red-400 font-semibold">
-              Remaining Tsh {(groupTotals.totalExpected - groupTotals.totalActual).toLocaleString()}
-            </p>
+              <div className="flex items-center gap-3 cursor-pointer hover:scale-105 transition-transform" title="Remaining balance (Total balance minus expenses)">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-2M7 13h.01" />
+                </svg>
+                <div>
+                  <p className="text-green-200 font-semibold">Remaining Balance</p>
+                  <p className="font-bold text-red-400">Tsh {(groupTotals.totalBalance - groupTotals.expenses).toLocaleString()}</p>
+                </div>
+              </div>
+            </div>
 
-            <p>{groupTotals.memberCount} members total</p>
+            <p className="text-sm text-white/70 mt-4">
+              {groupTotals.memberCount > 0 ? groupTotals.memberCount - 1 : 0} members total
+            </p>
           </div>
         </div>
       </div>
